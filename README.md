@@ -4,21 +4,15 @@ One-page site for GTA property managers and building owners.
 
 **Live:** https://ssbrain.github.io/gta-landlord-solutions/
 
-## Form link
+## Intake form
 
-The Microsoft Form is not attached yet. The placeholder lives in one place, `config.js`:
+The “Tell us about your unit” form is on the site at `#intake` and posts to FormSubmit (`besthome8658@outlook.com`). After submit, visitors go to `thanks.html`.
+
+All “Tell us about your unit” buttons use the value in `config.js`:
 
 ```js
-window.FORM_LINK = "FORM_LINK_PLACEHOLDER";
+window.FORM_LINK = "#intake";
 ```
-
-When the form is ready, swap it with one command:
-
-```bash
-sed -i 's|FORM_LINK_PLACEHOLDER|https://forms.cloud.microsoft/YOUR_FORM|' config.js
-```
-
-Until then, “Tell us about your unit” scrolls to the contact section (phone and email).
 
 ## Flyer
 

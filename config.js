@@ -1,6 +1,5 @@
-/* GTA Landlord Solutions — form link (the only place to change it).
-   When the Microsoft Form is ready, swap the placeholder with one command:
-     sed -i 's|FORM_LINK_PLACEHOLDER|https://forms.cloud.microsoft/YOUR_FORM|' config.js
-   Until then, "Tell us about your unit" buttons go to the contact section.
+/* GTA Landlord Solutions — form destination (the only place to change it).
+   All “Tell us about your unit” buttons use this value.
+   The intake form is on this site at #intake and posts to FormSubmit.
 */
-window.FORM_LINK = "FORM_LINK_PLACEHOLDER";
+window.FORM_LINK = "#intake";

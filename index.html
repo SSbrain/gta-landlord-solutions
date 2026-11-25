@@ -95,6 +95,25 @@ details p{margin:0 0 16px;color:var(--muted)}
 .contact .coords span{opacity:.7;margin:0 8px}
 footer{background:#100C06;color:#E8D5B0;text-align:center;padding:22px 20px;font-size:14px}
 footer small{display:block;opacity:.75;margin-top:6px;font-size:12px}
+.form-card{max-width:740px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:14px;padding:32px 28px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 20px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field.full{grid-column:1/-1}
+.field label,.checks legend{font-size:14px;font-weight:600;color:var(--ink)}
+.req{color:#B15B00;font-weight:700}
+.field input[type=text],.field input[type=tel],.field input[type=email],.field input[type=number],.field select,.field textarea{font:inherit;color:var(--ink);padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;width:100%}
+.field input:focus,.field select:focus,.field textarea:focus{outline:2px solid var(--brand);outline-offset:1px;border-color:var(--brand)}
+.field textarea{min-height:110px;resize:vertical}
+.checks{grid-column:1/-1;border:0;margin:0;padding:0}
+.checks .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;margin-top:8px}
+.checks .opts label{display:flex;align-items:flex-start;gap:8px;font-weight:500;font-size:15px;color:var(--ink2)}
+.checks input{accent-color:var(--brand);width:18px;height:18px;margin-top:2px;flex:none}
+.honey{position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}
+.form-card .btn{margin:10px 0 0;cursor:pointer;font:inherit}
+@media(max-width:560px){
+  .form-grid,.checks .opts{grid-template-columns:1fr}
+  .form-card{padding:22px 16px}
+}
 @media(max-width:900px){
   nav.links{display:none}
   .hero .grid,.services,.addon{grid-template-columns:1fr}
@@ -124,7 +143,7 @@ footer small{display:block;opacity:.75;margin-top:6px;font-size:12px}
   <a href="#services">Services</a>
   <a href="#how">How it works</a>
   <a href="#faq">FAQ</a>
-  <a href="#contact">Contact</a>
+  <a href="#intake">Tell us about your unit</a>
  </nav>
  <a class="phone-link" href="tel:+16478918658">647-891-8658</a>
 </div></header>
@@ -140,7 +159,7 @@ footer small{display:block;opacity:.75;margin-top:6px;font-size:12px}
     <li>You approve every tenant</li>
     <li>Paid only when the lease is signed</li>
   </ul>
-  <a class="btn" data-form href="#contact">Tell us about your unit</a>
+  <a class="btn" data-form href="#intake">Tell us about your unit</a>
   <a class="btn alt" href="tel:+16478918658">Call 647-891-8658</a>
  </div>
  <div class="pricebox">
@@ -230,11 +249,56 @@ footer small{display:block;opacity:.75;margin-top:6px;font-size:12px}
  </div>
 </div></section>
 
-<section id="contact" class="contact"><div class="wrap">
+
+<section id="intake" class="alt"><div class="wrap">
  <h2>Tell us about your unit</h2>
- <p>Have a vacancy coming up, or curious what your building is worth? Fill in the short form, call, or email. We’ll get back to you quickly.</p>
- <a class="btn" data-form href="#contact">Tell us about your unit</a>
- <a class="btn alt" href="tel:+16478918658">Call 647-891-8658</a>
+ <p class="lead">Have a vacancy coming up, or curious what your building is worth? Fill in the short form below. We’ll get back to you quickly.</p>
+ <form class="form-card" action="https://formsubmit.co/besthome8658@outlook.com" method="POST" accept-charset="UTF-8">
+  <input type="hidden" name="_subject" value="New landlord inquiry - GTA Landlord Solutions">
+  <input type="hidden" name="_template" value="table">
+  <input type="hidden" name="_captcha" value="false">
+  <input type="hidden" name="_next" value="https://ssbrain.github.io/gta-landlord-solutions/thanks.html">
+  <div class="honey" aria-hidden="true">
+   <label for="website">Leave this field empty</label>
+   <input type="text" id="website" name="_honey" tabindex="-1" autocomplete="off">
+  </div>
+  <div class="form-grid">
+   <div class="field"><label for="name">Name <span class="req">*</span></label><input id="name" name="name" type="text" required autocomplete="name"></div>
+   <div class="field"><label for="phone">Phone <span class="req">*</span></label><input id="phone" name="phone" type="tel" required autocomplete="tel"></div>
+   <div class="field full"><label for="email">Email <span class="req">*</span></label><input id="email" name="email" type="email" required autocomplete="email"></div>
+   <fieldset class="checks">
+    <legend>What do you need?</legend>
+    <div class="opts">
+     <label><input type="checkbox" name="need" value="Lease my unit"> Lease my unit</label>
+     <label><input type="checkbox" name="need" value="Sell my property"> Sell my property</label>
+     <label><input type="checkbox" name="need" value="Ongoing property management"> Ongoing property management</label>
+     <label><input type="checkbox" name="need" value="Free price estimate"> Free price estimate</label>
+    </div>
+   </fieldset>
+   <div class="field full"><label for="address">Property address or area <span class="req">*</span></label><input id="address" name="address" type="text" required placeholder="Street address or neighbourhood, city"></div>
+   <div class="field"><label for="property_type">Property type</label>
+    <select id="property_type" name="property_type">
+     <option value="">Select…</option>
+     <option>Condo</option>
+     <option>House</option>
+     <option>Basement unit</option>
+     <option>Multi-unit building</option>
+     <option>Other</option>
+    </select>
+   </div>
+   <div class="field"><label for="units">Number of units</label><input id="units" name="units" type="number" min="1" step="1" inputmode="numeric"></div>
+   <div class="field full"><label for="best_time">Best time to reach you</label><input id="best_time" name="best_time" type="text" placeholder="e.g. weekday afternoons"></div>
+   <div class="field full"><label for="message">Message</label><textarea id="message" name="message" rows="4"></textarea></div>
+  </div>
+  <button class="btn" type="submit">Send</button>
+ </form>
+</div></section>
+
+<section id="contact" class="contact"><div class="wrap">
+ <h2>Prefer to call or email?</h2>
+ <p>You can also reach us directly. We’ll get back to you quickly.</p>
+ <a class="btn" href="tel:+16478918658">Call 647-891-8658</a>
+ <a class="btn alt" href="mailto:besthome8658@outlook.com">Email us</a>
  <p class="coords">
   <a class="tel" href="tel:+16478918658">647-891-8658</a>
   <span>·</span>
@@ -250,15 +314,13 @@ footer small{display:block;opacity:.75;margin-top:6px;font-size:12px}
 <script src="config.js"></script>
 <script>
 (function () {
-  var link = (window.FORM_LINK || "").trim();
-  var ready = /^https?:\/\//i.test(link);
+  var link = (window.FORM_LINK || "#intake").trim() || "#intake";
   document.querySelectorAll("a[data-form]").forEach(function (a) {
-    if (ready) {
-      a.href = link;
+    a.href = link;
+    if (/^https?:\/\//i.test(link)) {
       a.target = "_blank";
       a.rel = "noopener";
     } else {
-      a.href = "#contact";
       a.removeAttribute("target");
     }
   });
