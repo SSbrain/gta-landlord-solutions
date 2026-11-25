@@ -3,12 +3,22 @@
 
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas as pdfcanvas
 
 OUT = Path(__file__).resolve().parent
+
+# Faint house background (Unsplash License, attribution appreciated).
+# Photo: Terrah Holly, "Orange and blue concrete painted house" (brick townhouse)
+# https://unsplash.com/photos/orange-and-blue-concrete-painted-house-pmhdkgRCbtE
+# File: bg-house-unsplash-terrah-holly.jpg
+BG_PHOTO = OUT / "bg-house-unsplash-terrah-holly.jpg"
+BG_OPACITY = 0.16  # within the 10–18% request; soft, not obvious
+BG_BLUR = 6
+BG_Y = 620  # place the facade in the lower cream area, under the navy fee band
+
 MONT = "/usr/share/fonts/truetype/sand-box/google/Montserrat/Montserrat-VariableFont_wght.ttf"
 INTER = "/usr/share/fonts/truetype/sand-box/google/Inter/Inter-VariableFont_opsz,wght.ttf"
 
@@ -103,8 +113,27 @@ def draw_logo(draw, cx, y, scale=1.0):
     return y + int(80 * s)
 
 
+def cream_with_house():
+    """Cream base with a faint, soft house photo in the lower background."""
+    cream = Image.new("RGB", (W, H), CREAM)
+    if not BG_PHOTO.exists():
+        return cream
+    photo = Image.open(BG_PHOTO).convert("RGB")
+    photo = ImageEnhance.Color(photo).enhance(0.7)
+    photo = ImageEnhance.Contrast(photo).enhance(0.92)
+    scale = W / photo.width
+    nw, nh = W, int(photo.height * scale + 0.5)
+    photo = photo.resize((nw, nh), Image.Resampling.LANCZOS)
+    layer = Image.new("RGB", (W, H), CREAM)
+    paste_h = min(nh, max(0, H - BG_Y))
+    if paste_h > 0:
+        layer.paste(photo.crop((0, 0, nw, paste_h)), (0, BG_Y))
+    layer = layer.filter(ImageFilter.GaussianBlur(radius=BG_BLUR))
+    return Image.blend(cream, layer, BG_OPACITY)
+
+
 def render_png():
-    img = Image.new("RGB", (W, H), CREAM)
+    img = cream_with_house()
     d = ImageDraw.Draw(img)
     bar = 14
     d.rectangle((0, 0, W, bar), fill=BRAND)
@@ -172,7 +201,9 @@ def render_png():
     cy = band_top + band_h / 2
     d.text((W / 2, cy - 62), "Leasing fee", font=lab_f, fill=BRAND, anchor="mt")
     d.text((W / 2, cy - 18), FEE, font=fee_f, fill=BRAND, anchor="mt")
-    d.text((W / 2, cy + 44), "Paid only when the lease is signed", font=note_f, fill=WHITE, anchor="mt")
+    note_f = inter(18, 500)
+    d.text((W / 2, cy + 36), "Paid only once the lease is signed", font=note_f, fill=WHITE, anchor="mt")
+    d.text((W / 2, cy + 62), "and every step is complete. No upfront cost.", font=note_f, fill=WHITE, anchor="mt")
     y = band_top + band_h + 48
 
     # One clear button; no phone, email, QR, or site URL.
@@ -190,7 +221,7 @@ def render_png():
     d.text((bx + btn_w / 2, by + btn_h / 2), cta, font=cta_f, fill=INK, anchor="mm")
 
     foot_f = inter(14, 500)
-    d.text((W / 2, H - bar - 22), "Real One Realty Inc., Brokerage", font=foot_f, fill=MUTED, anchor="mt")
+    d.text((W / 2, H - bar - 22), "Best Home Team", font=foot_f, fill=MUTED, anchor="mt")
 
     return img
 
