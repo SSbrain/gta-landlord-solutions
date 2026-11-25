@@ -4,7 +4,6 @@
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
-import qrcode
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas as pdfcanvas
@@ -13,16 +12,13 @@ OUT = Path(__file__).resolve().parent
 MONT = "/usr/share/fonts/truetype/sand-box/google/Montserrat/Montserrat-VariableFont_wght.ttf"
 INTER = "/usr/share/fonts/truetype/sand-box/google/Inter/Inter-VariableFont_opsz,wght.ttf"
 
-INK = (26, 20, 8)
+INK = (31, 58, 95)  # #1F3A5F deep navy
 BRAND = (245, 166, 35)
 CREAM = (255, 244, 224)
 WHITE = (255, 255, 255)
-MUTED = (58, 46, 24)
+MUTED = (90, 113, 140)  # #5A718C
 
-SITE_URL = "https://ssbrain.github.io/gta-landlord-solutions/"
-SITE_DISPLAY = "ssbrain.github.io/gta-landlord-solutions"
 FEE = "One month's rent + HST"
-PHONE = "647-891-8658"
 
 W, H = 1080, 1350
 
@@ -75,17 +71,6 @@ def wrap_lines(draw, text, fnt, max_width):
         lines.append(cur)
     return lines
 
-
-def make_qr(size):
-    qr = qrcode.QRCode(
-        error_correction=qrcode.constants.ERROR_CORRECT_M,
-        box_size=10,
-        border=2,
-    )
-    qr.add_data(SITE_URL)
-    qr.make(fit=True)
-    img = qr.make_image(fill_color=INK, back_color=WHITE).convert("RGB")
-    return img.resize((size, size), Image.Resampling.NEAREST)
 
 
 def draw_logo(draw, cx, y, scale=1.0):
@@ -185,39 +170,27 @@ def render_png():
     fee_f = mont(44, 800)
     note_f = inter(20, 500)
     cy = band_top + band_h / 2
-    d.text((W / 2, cy - 62), "LEASING FEE", font=lab_f, fill=BRAND, anchor="mt")
-    # letter-space the label a bit
+    d.text((W / 2, cy - 62), "Leasing fee", font=lab_f, fill=BRAND, anchor="mt")
     d.text((W / 2, cy - 18), FEE, font=fee_f, fill=BRAND, anchor="mt")
     d.text((W / 2, cy + 44), "Paid only when the lease is signed", font=note_f, fill=WHITE, anchor="mt")
-    y = band_top + band_h + 28
+    y = band_top + band_h + 48
 
-    phone_f = mont(40, 800)
-    d.text((W / 2, y), PHONE, font=phone_f, fill=INK, anchor="mt")
-    y += 54
-
-    # bottom: QR + URL + CTA button
-    qr_size = 168
-    qr = make_qr(qr_size)
-    url_f = inter(18, 600)
-    cta_f = mont(20, 700)
-    cta = "Tell us about your unit"
-    url_w = d.textlength(SITE_DISPLAY, font=url_f)
+    # One clear button; no phone, email, QR, or site URL.
+    prompt_f = inter(22, 600)
+    d.text((W / 2, y), "Have a unit coming up?", font=prompt_f, fill=INK, anchor="mt")
+    y += 44
+    cta = "Tell us about your unit  →"
+    cta_f = mont(26, 700)
     cta_w = d.textlength(cta, font=cta_f)
-    pad_x, pad_y = 20, 14
-    btn_w, btn_h = cta_w + pad_x * 2, 20 + pad_y * 2
-    text_w = max(url_w, btn_w)
-    group_w = qr_size + 28 + text_w
-    gx = (W - group_w) / 2
-    remain = (H - bar - 16) - y
-    gy = y + max(8, (remain - qr_size) * 0.35)
-    img.paste(qr, (int(gx), int(gy)))
-    d.rectangle((gx - 1, gy - 1, gx + qr_size, gy + qr_size), outline=INK, width=2)
-    tx = gx + qr_size + 28
-    ty = gy + qr_size / 2
-    d.text((tx, ty - 36), SITE_DISPLAY, font=url_f, fill=MUTED, anchor="lm")
-    bx, by = tx, ty + 2
-    d.rounded_rectangle((bx, by, bx + btn_w, by + btn_h), radius=10, fill=BRAND)
+    pad_x, pad_y = 36, 20
+    btn_w, btn_h = cta_w + pad_x * 2, 28 + pad_y * 2
+    bx = (W - btn_w) / 2
+    by = y + 8
+    d.rounded_rectangle((bx, by, bx + btn_w, by + btn_h), radius=12, fill=BRAND)
     d.text((bx + btn_w / 2, by + btn_h / 2), cta, font=cta_f, fill=INK, anchor="mm")
+
+    foot_f = inter(14, 500)
+    d.text((W / 2, H - bar - 22), "Real One Realty Inc., Brokerage", font=foot_f, fill=MUTED, anchor="mt")
 
     return img
 
